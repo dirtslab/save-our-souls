@@ -4,7 +4,7 @@
              x:Class="save_our_souls.Views.SignUpPage"
              Title="">
 
-    <Grid RowDefinitions="Auto, *, 100" 
+    <Grid RowDefinitions="Auto, *" 
       ColumnDefinitions="*"
       RowSpacing="10"
       Padding="20">
