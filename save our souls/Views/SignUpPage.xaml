@@ -38,14 +38,18 @@
             HorizontalOptions="Center" />
             <StackLayout>
                 <Entry 
+                x:Name="UsernameEntry"
                 Placeholder="Username"
-                />
+                Text="{Binding Username}"/>
                 <Entry 
+                x:Name="PasswordEntry"
                 Placeholder="Password"
-                IsPassword="True"/>
+                IsPassword="True"
+                Text="{Binding Password}"/>
             </StackLayout>
             <Button Text="Create Account!" 
                     FontFamily="SourGummySemiBold"
+                    Clicked="OnCreateAccountClicked"
                     />
         </StackLayout>
     </Grid>

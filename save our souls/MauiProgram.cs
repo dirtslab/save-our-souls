@@ -17,8 +17,14 @@ namespace save_our_souls
                     fonts.AddFont("SourGummy-SemiBold.ttf", "SourGummySemiBold");
                 });
 
+            builder.Services.AddSingleton<Services.UserAccountDatabase>();
+            builder.Services.AddSingleton<LoginPage>();
+            builder.Services.AddTransient<ViewModels.LoginVM>();
+            builder.Services.AddTransient<ViewModels.SignUpVM>();
+            builder.Services.AddTransient<Views.SignUpPage>();
+
 #if DEBUG
-    		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
 #endif
 
             return builder.Build();

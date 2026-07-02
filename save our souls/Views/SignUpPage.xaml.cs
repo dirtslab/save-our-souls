@@ -1,14 +1,23 @@
+using save_our_souls.ViewModels;
+
 namespace save_our_souls.Views;
 
 public partial class SignUpPage : ContentPage
 {
-	public SignUpPage()
+	SignUpVM signUpVM;
+
+	public SignUpPage(SignUpVM signUpVM)
 	{
-		InitializeComponent();
-	}
+        InitializeComponent();
+        this.signUpVM = signUpVM;
+		BindingContext = signUpVM;
+    }
 
 	private async void OnCreateAccountClicked(object sender, EventArgs e)
 	{
-		await Shell.Current.GoToAsync("..");
-	}
+		if (signUpVM != null)
+        {
+            await signUpVM.SignUpUser();
+        }
+    }
 }

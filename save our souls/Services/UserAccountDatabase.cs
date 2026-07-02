@@ -6,7 +6,7 @@ using System.Security.Cryptography;
 
 namespace save_our_souls.Services
 {
-    class UserAccountDatabase
+    public class UserAccountDatabase
     {
         private const int SaltSize = 16;      // 128-bit
         private const int HashSize = 32;      // 256-bit
@@ -19,20 +19,20 @@ namespace save_our_souls.Services
             if (db != null)
                 return;
             db = new SQLiteAsyncConnection(Constants.DatabasePath, Constants.Flags);
-            var result = await db.CreateTableAsync<Models.UserAccount>();
+            var result = await db.CreateTableAsync<Models.UserAccountModel>();
         }
 
-        public async Task AddUserAccountAsync(Models.UserAccount userAccount)
+        public async Task AddUserAccountAsync(Models.UserAccountModel userAccount)
         {
             await Init();
             userAccount.Password = HashPassword(userAccount.Password);
             await db.InsertAsync(userAccount);
         }
 
-        public async Task<Models.UserAccount?> GetUserAccountAsync(string username, string password)
+        public async Task<Models.UserAccountModel?> GetUserAccountAsync(string username, string password)
         {
             await Init();
-            var userAccount = await db.Table<Models.UserAccount>()
+            var userAccount = await db.Table<Models.UserAccountModel>()
                 .Where(u => u.Username == username)
                 .FirstOrDefaultAsync();
 

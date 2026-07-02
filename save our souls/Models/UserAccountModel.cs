@@ -5,7 +5,7 @@ using System.Text;
 
 namespace save_our_souls.Models
 {
-    class UserAccount
+    public class UserAccountModel
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
