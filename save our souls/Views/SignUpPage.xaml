@@ -3,11 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="save_our_souls.Views.SignUpPage"
              Title="">
-    <Shell.BackButtonBehavior>
-        <BackButtonBehavior IsVisible="False" />
-    </Shell.BackButtonBehavior>
 
-    <Grid RowDefinitions="Auto, *, 100" 
+    <Grid RowDefinitions="Auto, *" 
       ColumnDefinitions="*"
       RowSpacing="10"
       Padding="20">
@@ -50,22 +47,6 @@
             <Button Text="Create Account!" 
                     FontFamily="SourGummySemiBold"
                     />
-        </StackLayout>
-
-        <StackLayout
-            Grid.Row="2">
-            <Label 
-            HorizontalOptions="Center"
-            VerticalOptions="Center"
-            FontFamily="SourGummySemiBold"
-            Text="Already have an account?"
-            />
-            <Button 
-            HorizontalOptions="Center"
-            VerticalOptions="Center"
-            FontFamily="SourGummySemiBold"
-            Text="Let me log in!"
-            Clicked="OnCreateAccountClicked"/>
         </StackLayout>
     </Grid>
 </ContentPage>
