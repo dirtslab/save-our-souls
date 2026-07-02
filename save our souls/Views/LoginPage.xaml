@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="save_our_souls.LoginPage"
+             Title="">
+    <Grid RowDefinitions="Auto, *, 100" 
+      ColumnDefinitions="*"
+      RowSpacing="10"
+      Padding="20">
+        <Border 
+            Grid.Row="0"
+            BackgroundColor="LightBlue"
+            >
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="15"/>
+            </Border.StrokeShape>
+            <Label
+                Text="SOS Game"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                FontSize="60"
+                FontFamily="SourGummyBlack"
+                />
+        </Border>
+
+        <StackLayout 
+            MaximumWidthRequest="250"
+            Grid.Row="1"
+            VerticalOptions="Center"
+            Spacing="30">
+
+            <Label 
+            Text="Login"
+            FontFamily="SourGummySemiBold"
+            FontSize="Large"
+            VerticalOptions="Center" 
+            HorizontalOptions="Center" />
+            <StackLayout>
+                <Entry 
+                Placeholder="Username"
+                />
+                <Entry 
+                Placeholder="Password"
+                IsPassword="True"/>
+            </StackLayout>
+            <Button Text="Let's Play!" 
+                    FontFamily="SourGummySemiBold"
+                    BackgroundColor="DarkCyan"
+                    />
+        </StackLayout>
+
+        <StackLayout
+            Grid.Row="2">
+            <Label 
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            FontFamily="SourGummySemiBold"
+            Text="New to this game?"
+            />
+            <Button 
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            FontFamily="SourGummySemiBold"
+            Text="Create an account!"
+            Clicked="OnCreateAccountClicked"/>
+        </StackLayout>
+
+    </Grid>
+</ContentPage>
