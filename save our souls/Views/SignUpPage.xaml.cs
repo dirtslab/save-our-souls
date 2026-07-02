@@ -9,6 +9,6 @@ public partial class SignUpPage : ContentPage
 
 	private async void OnCreateAccountClicked(object sender, EventArgs e)
 	{
-		await Shell.Current.GoToAsync("..", false);
+		await Shell.Current.GoToAsync("..");
 	}
 }
