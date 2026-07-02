@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="save_our_souls.LoginPage"
+             x:Class="save_our_souls.Views.LoginPage"
              Title="">
     <Grid RowDefinitions="Auto, *, 100" 
       ColumnDefinitions="*"
@@ -37,16 +37,19 @@
             HorizontalOptions="Center" />
             <StackLayout>
                 <Entry 
+                x:Name="UsernameEntry"
                 Placeholder="Username"
-                />
+                Text="{Binding Username}"/>
                 <Entry 
+                x:Name="PasswordEntry"
                 Placeholder="Password"
-                IsPassword="True"/>
+                IsPassword="True"
+                Text="{Binding Password}"/>
             </StackLayout>
             <Button Text="Let's Play!" 
                     FontFamily="SourGummySemiBold"
                     BackgroundColor="DarkCyan"
-                    />
+                    Clicked="OnLoginClicked"/>
         </StackLayout>
 
         <StackLayout
