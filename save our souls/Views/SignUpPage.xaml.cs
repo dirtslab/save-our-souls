@@ -7,8 +7,4 @@ public partial class SignUpPage : ContentPage
 		InitializeComponent();
 	}
 
-	private async void OnCreateAccountClicked(object sender, EventArgs e)
-	{
-		await Shell.Current.GoToAsync("..");
-	}
 }
