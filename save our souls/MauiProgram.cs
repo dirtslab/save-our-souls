@@ -18,7 +18,7 @@ namespace save_our_souls
                 });
 
             builder.Services.AddSingleton<Services.UserAccountDatabase>();
-            builder.Services.AddSingleton<LoginPage>();
+            builder.Services.AddSingleton<Views.LoginPage>();
             builder.Services.AddTransient<ViewModels.LoginVM>();
             builder.Services.AddTransient<ViewModels.SignUpVM>();
             builder.Services.AddTransient<Views.SignUpPage>();

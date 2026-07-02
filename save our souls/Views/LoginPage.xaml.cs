@@ -1,6 +1,6 @@
 using save_our_souls.ViewModels;
 
-namespace save_our_souls;
+namespace save_our_souls.Views;
 
 public partial class LoginPage : ContentPage
 {
@@ -19,9 +19,9 @@ public partial class LoginPage : ContentPage
 		{
 			bool success = await loginVM.LoginUser();
 			if (success)
-				await DisplayAlert("Login Successful", "Welcome back!", "OK");
+				await DisplayAlertAsync("Login Successful", "Welcome back!", "OK");
 			else
-				await DisplayAlert("Login Failed", "Invalid username or password.", "OK");
+				await DisplayAlertAsync("Login Failed", "Invalid username or password.", "OK");
 		}
 	}
 

@@ -14,10 +14,10 @@ namespace save_our_souls.ViewModels
             _userAccountDatabase = userAccountDatabase;
         }
 
-        public async Task SignUpUser()
+        public async Task<bool> SignUpUser()
         {
             if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Password))
-                return;
+                return false;
 
             var userAccount = new Models.UserAccountModel
             {
@@ -27,6 +27,10 @@ namespace save_our_souls.ViewModels
             };
 
             await _userAccountDatabase.AddUserAccountAsync(userAccount);
+
+
+
+            return true;
         }
     }
 }

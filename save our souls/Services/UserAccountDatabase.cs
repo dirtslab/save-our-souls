@@ -25,6 +25,10 @@ namespace save_our_souls.Services
         public async Task AddUserAccountAsync(Models.UserAccountModel userAccount)
         {
             await Init();
+            if (await GetUserNameAsync(userAccount.Username) != null)
+            {
+                throw new Exception("Username already exists.");
+            }
             userAccount.Password = HashPassword(userAccount.Password);
             await db.InsertAsync(userAccount);
         }
@@ -43,6 +47,15 @@ namespace save_our_souls.Services
                 return userAccount;
 
             return null;
+        }
+
+        public async Task<Models.UserAccountModel?> GetUserNameAsync(string username)
+        {
+            await Init();
+            var userAccount = await db.Table<Models.UserAccountModel>()
+                .Where(u => u.Username == username)
+                .FirstOrDefaultAsync();
+            return userAccount;
         }
 
         private static string HashPassword(string password)

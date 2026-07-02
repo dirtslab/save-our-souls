@@ -3,12 +3,12 @@
     x:Class="save_our_souls.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:save_our_souls"
+    xmlns:views="clr-namespace:save_our_souls.Views"
     Title="save_our_souls">
 
     <ShellContent
         Title="Login"
-        ContentTemplate="{DataTemplate local:LoginPage}"
+        ContentTemplate="{DataTemplate views:LoginPage}"
         Route="LoginPage" />
 
 </Shell>
