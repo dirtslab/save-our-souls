@@ -43,9 +43,14 @@
                         <ImageButton x:Name="ToggleBtn"
                                      Source="show_icon.png"
                                      Clicked="OnShowPasswordToggle"
+                                     HeightRequest="{Binding Source={x:Reference PasswordEntry}, Path=Height}"
+                                     WidthRequest="{Binding Source={x:Reference PasswordEntry}, Path=Height}"
+                                     MaximumHeightRequest="14"
+                                     Padding="0"
+                                     BackgroundColor="Transparent"
+                                     BorderWidth="0"
+                                     VerticalOptions="Center"
                                      HorizontalOptions="End"
-                                     VerticalOptions="Fill"
-                                     MaximumHeightRequest="20"
                                      Opacity="0.5" />
                     </Grid>
                 </StackLayout>
