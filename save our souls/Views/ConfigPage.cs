@@ -13,8 +13,8 @@ public class ConfigPage : ContentPage
             HorizontalOptions = LayoutOptions.Center
         };
 
-        var singlePlayerOption = CreateGameModeOption("Singleplayer", true);
-        var multiPlayerOption = CreateGameModeOption("Multiplayer");
+        var singlePlayerOption = CreateGameModeOption("Singleplayer", Preferences.Default.Get<bool>("GameMode", true), out var singlePlayerRadioButton);
+        var multiPlayerOption = CreateGameModeOption("Multiplayer", !Preferences.Default.Get<bool>("GameMode", true), out _);
 
         var gameModeSelect = new Grid
         {
@@ -35,11 +35,11 @@ public class ConfigPage : ContentPage
         var lessButton = CreateCountButton("-");
         var moreButton = CreateCountButton("+");
 
-        int gameSize = 5;
+        int gameSize = Preferences.Default.Get("GameSize", 5);
 
         var sizeLabel = new Label
         {
-            Text = "5x5",
+            Text = $"{gameSize}x{gameSize}",
             FontFamily = "SourGummySemiBold",
             HorizontalOptions = LayoutOptions.Center,
             VerticalOptions = LayoutOptions.Center,
@@ -64,9 +64,20 @@ public class ConfigPage : ContentPage
             }
         };
 
-        Grid.SetColumn(lessButton, 0);
-        Grid.SetColumn(sizeLabel, 1);
-        Grid.SetColumn(moreButton, 2);
+        var sizeNameLabel = new Label
+        {
+            Text = "Size:",
+            FontFamily = "SourGummySemiBold",
+            TextColor = Colors.Black,
+            HorizontalOptions = LayoutOptions.Center,
+            VerticalOptions = LayoutOptions.Center,
+            FontSize = 20
+        };
+
+        Grid.SetColumn(sizeNameLabel, 0);
+        Grid.SetColumn(lessButton, 1);
+        Grid.SetColumn(sizeLabel, 2);
+        Grid.SetColumn(moreButton, 3);
 
         var gameSizeSelect = new Grid
         {
@@ -74,10 +85,12 @@ public class ConfigPage : ContentPage
             {
                 new ColumnDefinition(GridLength.Star),
                 new ColumnDefinition(GridLength.Star),
+                new ColumnDefinition(GridLength.Star),
                 new ColumnDefinition(GridLength.Star)
             },
             Children =
             {
+                sizeNameLabel,
                 lessButton,
                 sizeLabel,
                 moreButton
@@ -88,14 +101,24 @@ public class ConfigPage : ContentPage
         {
             Text = "Let's Play!",
             FontFamily = "SourGummySemiBold",
-            BackgroundColor = Colors.DarkCyan
+            BackgroundColor = Colors.DarkCyan,
+            HorizontalOptions = LayoutOptions.Center,
+            VerticalOptions = LayoutOptions.Center
+        };
+
+        submitButton.Clicked += (_,_) =>
+        {
+            var selectedGameMode = singlePlayerRadioButton.IsChecked;
+            Preferences.Default.Set("GameMode", selectedGameMode);
+            Preferences.Default.Set("GameSize", gameSize);
         };
 
         var verticalLayout = new VerticalStackLayout
         {
             Padding = 16,
             Spacing = 12,
-            Children = { titleLabel, gameModeSelect, gameSizeSelect }
+            Children = { titleLabel, gameModeSelect, gameSizeSelect },
+            VerticalOptions = LayoutOptions.Center
         };
 
         Grid.SetRow(verticalLayout, 0);
@@ -107,7 +130,7 @@ public class ConfigPage : ContentPage
             {
                 new RowDefinition(GridLength.Star),
                 new RowDefinition(100)
-            }
+            },
             Children =
             {
                 verticalLayout,
@@ -117,7 +140,7 @@ public class ConfigPage : ContentPage
 
         Content = new ScrollView
         {
-            Content = verticalLayout
+            Content = gridLayout
         };
     }
 
@@ -163,7 +186,7 @@ public class ConfigPage : ContentPage
         return button;
     }
 
-    private static View CreateGameModeOption(string text, bool isChecked = false)
+    private static View CreateGameModeOption(string text, bool isChecked, out RadioButton optionRadioButton)
     {
         var optionLabel = new Label
         {
@@ -172,8 +195,8 @@ public class ConfigPage : ContentPage
             VerticalOptions = LayoutOptions.Center,
             HorizontalTextAlignment = TextAlignment.Center,
             VerticalTextAlignment = TextAlignment.Center,
-            FontAttributes = FontAttributes.Bold,
-            FontFamily = "SourGummySemiBold"
+            FontFamily = "SourGummySemiBold",
+            FontSize = 20
         };
 
         var optionBorder = new Border
@@ -186,8 +209,8 @@ public class ConfigPage : ContentPage
             Content = optionLabel
         };
 
-        var optionRadioButton = new RadioButton
-        {
+        optionRadioButton = new RadioButton
+        { 
             GroupName = "GameMode",
             IsChecked = isChecked,
             Opacity = 0,
