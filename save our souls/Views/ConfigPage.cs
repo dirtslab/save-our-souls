@@ -13,8 +13,8 @@ public class ConfigPage : ContentPage
             HorizontalOptions = LayoutOptions.Center
         };
 
-        var singlePlayerOption = CreateGameModeOption("Singleplayer", Preferences.Default.Get<bool>("GameMode", true), out var singlePlayerRadioButton);
-        var multiPlayerOption = CreateGameModeOption("Multiplayer", !Preferences.Default.Get<bool>("GameMode", true), out _);
+        var singlePlayerOption = CreateLabelOption("Singleplayer", "GameMode", Preferences.Default.Get<bool>("GameMode", true), out var singlePlayerRadioButton);
+        var multiPlayerOption = CreateLabelOption("Multiplayer", "GameMode", !Preferences.Default.Get<bool>("GameMode", true), out _);
 
         var gameModeSelect = new Grid
         {
@@ -97,6 +97,26 @@ public class ConfigPage : ContentPage
             }
         };
 
+        var colorOptions = new List<Color>
+        {
+            Colors.Red,
+            Colors.Green,
+            Colors.Blue,
+            Colors.Yellow,
+            Colors.Purple,
+            Colors.Orange
+        };
+
+        var colorSelect = new Grid();
+
+        for (int i = 0; i < colorOptions.Count; i++)
+        {
+            colorSelect.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
+            var colorOption = CreateColorOption(colorOptions[i], "Color", Preferences.Default.Get<int>("Color", 0) == i, out var colorRadioButton);
+            Grid.SetColumn(colorOption, i);
+            colorSelect.Children.Add(colorOption);
+        }
+
         var submitButton = new Button
         {
             Text = "Let's Play!",
@@ -117,7 +137,7 @@ public class ConfigPage : ContentPage
         {
             Padding = 16,
             Spacing = 12,
-            Children = { titleLabel, gameModeSelect, gameSizeSelect },
+            Children = { titleLabel, gameModeSelect, gameSizeSelect, colorSelect },
             VerticalOptions = LayoutOptions.Center
         };
 
@@ -186,9 +206,23 @@ public class ConfigPage : ContentPage
         return button;
     }
 
-    private static View CreateGameModeOption(string text, bool isChecked, out RadioButton optionRadioButton)
+    private static View CreateColorOption(Color color, string group, bool isChecked, out RadioButton optionRadioButton)
     {
-        var optionLabel = new Label
+        var colorBox = new BoxView
+        {
+            Color = color,
+            WidthRequest = 48,
+            HeightRequest = 48,
+            CornerRadius = 10,
+            HorizontalOptions = LayoutOptions.Center,
+            VerticalOptions = LayoutOptions.Center
+        };
+        return CreateModeOption(colorBox, group, isChecked, out optionRadioButton);
+    }
+
+    private static View CreateLabelOption(string text, string group, bool isChecked, out RadioButton optionRadioButton)
+    {
+        var label = new Label
         {
             Text = text,
             HorizontalOptions = LayoutOptions.Center,
@@ -198,6 +232,11 @@ public class ConfigPage : ContentPage
             FontFamily = "SourGummySemiBold",
             FontSize = 20
         };
+        return CreateModeOption(label, group, isChecked, out optionRadioButton);
+    }
+
+    private static View CreateModeOption(View contents, string group, bool isChecked, out RadioButton optionRadioButton)
+    {
 
         var optionBorder = new Border
         {
@@ -206,12 +245,12 @@ public class ConfigPage : ContentPage
             StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(10) },
             Stroke = Color.FromArgb("#808080"),
             BackgroundColor = Color.FromArgb("#1AFFFFFF"),
-            Content = optionLabel
+            Content = contents
         };
 
         optionRadioButton = new RadioButton
         { 
-            GroupName = "GameMode",
+            GroupName = group,
             IsChecked = isChecked,
             Opacity = 0,
             Content = string.Empty,
