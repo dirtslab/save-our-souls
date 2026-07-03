@@ -4,53 +4,55 @@
              x:Class="save_our_souls.Views.SignUpPage"
              Title="">
 
-    <Grid RowDefinitions="Auto, *" 
-      ColumnDefinitions="*"
-      RowSpacing="10"
-      Padding="20">
-        <Border 
-            Grid.Row="0"
-            BackgroundColor="LightBlue"
-            >
-            <Border.StrokeShape>
-                <RoundRectangle CornerRadius="15"/>
-            </Border.StrokeShape>
-            <Label
-                Text="SOS Game"
-                HorizontalOptions="Center"
-                VerticalOptions="Center"
-                FontSize="60"
-                FontFamily="SourGummyBlack"
-                />
-        </Border>
+    <ScrollView>
+        <Grid RowDefinitions="Auto, *"
+              ColumnDefinitions="*"
+              RowSpacing="10"
+              Padding="20">
+            <Border Grid.Row="0"
+                    BackgroundColor="LightBlue">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="15" />
+                </Border.StrokeShape>
+                <Label Text="SOS Game"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"
+                       FontSize="60"
+                       FontFamily="SourGummyBlack" />
+            </Border>
 
-        <StackLayout 
-            MaximumWidthRequest="250"
-            Grid.Row="1"
-            VerticalOptions="Center"
-            Spacing="30">
+            <StackLayout MaximumWidthRequest="250"
+                         Grid.Row="1"
+                         VerticalOptions="Center"
+                         Spacing="30">
 
-            <Label 
-            Text="Signup"
-            FontFamily="SourGummySemiBold"
-            FontSize="Large"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-            <StackLayout>
-                <Entry 
-                x:Name="UsernameEntry"
-                Placeholder="Username"
-                Text="{Binding Username}"/>
-                <Entry 
-                x:Name="PasswordEntry"
-                Placeholder="Password"
-                IsPassword="True"
-                Text="{Binding Password}"/>
+                <Label Text="Signup"
+                       FontFamily="SourGummySemiBold"
+                       FontSize="Large"
+                       VerticalOptions="Center"
+                       HorizontalOptions="Center" />
+                <StackLayout>
+                    <Entry x:Name="UsernameEntry"
+                           Placeholder="Username"
+                           Text="{Binding Username}" />
+                    <Grid>
+                        <Entry x:Name="PasswordEntry"
+                               Placeholder="Password"
+                               IsPassword="True"
+                               Text="{Binding Password}" />
+                        <ImageButton x:Name="ToggleBtn"
+                                     Source="show_icon.png"
+                                     Clicked="OnShowPasswordToggle"
+                                     HorizontalOptions="End"
+                                     VerticalOptions="Fill"
+                                     MaximumHeightRequest="20"
+                                     Opacity="0.5" />
+                    </Grid>
+                </StackLayout>
+                <Button Text="Create Account!"
+                        FontFamily="SourGummySemiBold"
+                        Clicked="OnCreateAccountClicked" />
             </StackLayout>
-            <Button Text="Create Account!" 
-                    FontFamily="SourGummySemiBold"
-                    Clicked="OnCreateAccountClicked"
-                    />
-        </StackLayout>
-    </Grid>
+        </Grid>
+    </ScrollView>
 </ContentPage>

@@ -1,3 +1,4 @@
+using CommunityToolkit.Maui.Alerts;
 using save_our_souls.ViewModels;
 
 namespace save_our_souls.Views;
@@ -23,7 +24,14 @@ public partial class SignUpPage : ContentPage
                 if (!success)
                 {
                     await DisplayAlertAsync("Sign Up Failed", "Please enter a valid username and password.", "OK");
+                    return;
                 }
+
+                var toast = Toast.Make("Account was successfully created!", CommunityToolkit.Maui.Core.ToastDuration.Long, 14);
+
+                await toast.Show();
+
+                await Navigation.PopAsync();
             }
             catch (Exception ex)
             {
@@ -31,5 +39,11 @@ public partial class SignUpPage : ContentPage
             }
 
         }
+    }
+
+    private void OnShowPasswordToggle(object sender, EventArgs e)
+    {
+        PasswordEntry.IsPassword = !PasswordEntry.IsPassword;
+        ToggleBtn.Source = PasswordEntry.IsPassword ? "show_icon.png" : "hide_icon.png";
     }
 }

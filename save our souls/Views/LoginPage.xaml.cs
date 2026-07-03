@@ -29,4 +29,10 @@ public partial class LoginPage : ContentPage
 	{
 		await Shell.Current.GoToAsync(nameof(Views.SignUpPage));
 	}
+
+    private void OnShowPasswordToggle(object sender, EventArgs e)
+    {
+        PasswordEntry.IsPassword = !PasswordEntry.IsPassword;
+        ToggleBtn.Source = PasswordEntry.IsPassword ? "show_icon.png" : "hide_icon.png";
+    }
 }
