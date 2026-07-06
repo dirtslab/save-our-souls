@@ -1,3 +1,5 @@
+using save_our_souls.ViewModels;
+
 namespace save_our_souls.Views;
 
 public class ConfigPage : ContentPage
