@@ -1,5 +1,3 @@
-using save_our_souls.ViewModels;
-
 namespace save_our_souls.Views;
 
 public class ConfigPage : ContentPage
@@ -226,7 +224,7 @@ public class ConfigPage : ContentPage
 
         var submitButton = new Button
         {
-            Text = "Let's Play!",
+            Text = "Start",
             FontFamily = "SourGummySemiBold",
             BackgroundColor = Colors.DarkCyan,
             HorizontalOptions = LayoutOptions.Center,
@@ -258,6 +256,14 @@ public class ConfigPage : ContentPage
             Preferences.Default.Set("GameMode", selectedGameMode);
             Preferences.Default.Set("GameSize", gameSize);
 
+            try
+            {
+                await Shell.Current.GoToAsync(nameof(Views.GamePage));
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlertAsync("Error", ex.Message, "OK");
+            }
 
         };
 

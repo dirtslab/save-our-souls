@@ -9,6 +9,7 @@ namespace save_our_souls
             InitializeComponent();
             Routing.RegisterRoute(nameof(Views.SignUpPage), typeof(Views.SignUpPage));
             Routing.RegisterRoute(nameof(Views.ConfigPage), typeof(Views.ConfigPage));
+            Routing.RegisterRoute(nameof(Views.GamePage), typeof(Views.GamePage));
         }
     }
 }
