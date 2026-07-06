@@ -16,7 +16,7 @@ public class ConfigPage : ContentPage
             VerticalOptions = LayoutOptions.Center,
             HorizontalOptions = LayoutOptions.Center
         };
-        nameLabel.SetBinding(Label.TextProperty, nameof(ConfigVM.Username));
+        nameLabel.SetBinding(Label.TextProperty, new Binding(nameof(ConfigVM.Username), stringFormat: "Welcome, {0}!"));
 
         var profileImage = new Image
         {
@@ -269,7 +269,7 @@ public class ConfigPage : ContentPage
             VerticalOptions = LayoutOptions.Center
         };
 
-        Grid.SetRow(profileImage, 0);
+        Grid.SetRow(nameGrid, 0);
         Grid.SetRow(verticalLayout, 1);
         Grid.SetRow(submitButton, 2);
 

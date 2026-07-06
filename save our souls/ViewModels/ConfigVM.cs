@@ -21,7 +21,18 @@ namespace save_our_souls.ViewModels
             }
         }
 
-        public string Username { get; set; }
+        private string _username = string.Empty;
+        public string Username
+        {
+            get => _username;
+            private set
+            {
+                if (_username == value)
+                    return;
+                _username = value;
+                OnPropertyChanged();
+            }
+        }
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
