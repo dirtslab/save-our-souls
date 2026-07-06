@@ -1,9 +1,54 @@
+using save_our_souls.ViewModels;
+
 namespace save_our_souls.Views;
 
 public class ConfigPage : ContentPage
 {
-    public ConfigPage()
+    public ConfigPage(ConfigVM configVM)
     {
+        BindingContext = configVM;
+
+        var nameLabel = new Label
+        {
+            Text = "Welcome!",
+            FontFamily = "SourGummySemiBold",
+            FontSize = 22,
+            VerticalOptions = LayoutOptions.Center,
+            HorizontalOptions = LayoutOptions.Center
+        };
+        nameLabel.SetBinding(Label.TextProperty, new Binding(nameof(ConfigVM.Username), stringFormat: "Welcome, {0}!"));
+
+        var profileImage = new Image
+        {
+            WidthRequest = 100,
+            HeightRequest = 100,
+            Aspect = Aspect.AspectFill,
+            HorizontalOptions = LayoutOptions.Center,
+            VerticalOptions = LayoutOptions.Center
+        };
+        profileImage.SetBinding(Image.SourceProperty, nameof(ConfigVM.ProfileImageUri));
+
+        Grid.SetColumn(nameLabel, 0);
+        Grid.SetColumn(profileImage, 1);
+
+        var nameGrid = new Grid
+        {
+            ColumnDefinitions =
+            {
+                new ColumnDefinition(GridLength.Auto),
+                new ColumnDefinition(GridLength.Auto)
+            },
+            Children =
+            {
+                nameLabel,
+                profileImage
+            },
+            HorizontalOptions = LayoutOptions.Center,
+            ColumnSpacing = 12
+        };
+
+        _ = configVM.LoadProfileImageAsync();
+
         var titleLabel = new Label
         {
             Text = "Configure Game",
@@ -224,18 +269,21 @@ public class ConfigPage : ContentPage
             VerticalOptions = LayoutOptions.Center
         };
 
-        Grid.SetRow(verticalLayout, 0);
-        Grid.SetRow(submitButton, 1);
+        Grid.SetRow(nameGrid, 0);
+        Grid.SetRow(verticalLayout, 1);
+        Grid.SetRow(submitButton, 2);
 
         var gridLayout = new Grid
         {
             RowDefinitions =
             {
+                new RowDefinition(100),
                 new RowDefinition(GridLength.Star),
                 new RowDefinition(100)
             },
             Children =
             {
+                nameGrid,
                 verticalLayout,
                 submitButton
             }

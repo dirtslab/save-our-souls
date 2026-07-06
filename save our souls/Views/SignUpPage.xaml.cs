@@ -58,4 +58,6 @@ public partial class SignUpPage : ContentPage
         PasswordEntry.IsPassword = !PasswordEntry.IsPassword;
         ToggleBtn.Source = PasswordEntry.IsPassword ? "show_icon.png" : "hide_icon.png";
     }
+
+
 }

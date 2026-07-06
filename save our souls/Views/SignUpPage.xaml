@@ -32,6 +32,12 @@
                        VerticalOptions="Center"
                        HorizontalOptions="Center" />
                 <StackLayout>
+                    <Button Text="Add profile photo"
+                            Command="{Binding ShowPhotoOptionsCommand}" />
+
+                    <Entry x:Name="NameEntry"
+                           Placeholder="Name"
+                           Text="{Binding Name}" />
                     <Entry x:Name="UsernameEntry"
                            Placeholder="Username"
                            Text="{Binding Username}" />
