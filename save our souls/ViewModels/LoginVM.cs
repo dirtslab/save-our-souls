@@ -20,7 +20,11 @@ namespace save_our_souls.ViewModels
                 return false;
 
             var userAccount = await _userAccountDatabase.GetUserAccountAsync(Username, Password);
-            return userAccount != null;
+            if (userAccount == null)
+                return false;
+
+            Preferences.Default.Set("CurrentUsername", userAccount.Username);
+            return true;
         }
     }
 }

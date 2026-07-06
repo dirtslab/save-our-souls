@@ -25,7 +25,7 @@ namespace save_our_souls.Services
         public async Task AddUserAccountAsync(Models.UserAccountModel userAccount)
         {
             await Init();
-            if (await GetUserNameAsync(userAccount.Username) != null)
+            if (await GetUserAccountByUsernameAsync(userAccount.Username) != null)
             {
                 throw new Exception("Username already exists.");
             }
@@ -49,7 +49,7 @@ namespace save_our_souls.Services
             return null;
         }
 
-        public async Task<Models.UserAccountModel?> GetUserNameAsync(string username)
+        public async Task<Models.UserAccountModel?> GetUserAccountByUsernameAsync(string username)
         {
             await Init();
             var userAccount = await db.Table<Models.UserAccountModel>()
