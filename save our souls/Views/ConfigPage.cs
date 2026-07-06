@@ -14,7 +14,7 @@ public class ConfigPage : ContentPage
         };
 
         var singlePlayerOption = CreateLabelOption("Singleplayer", "GameMode", Preferences.Default.Get<bool>("GameMode", true), out var singlePlayerRadioButton);
-        var multiPlayerOption = CreateLabelOption("Multiplayer", "GameMode", !Preferences.Default.Get<bool>("GameMode", true), out _);
+        var multiPlayerOption = CreateLabelOption("Multiplayer", "GameMode", !Preferences.Default.Get<bool>("GameMode", true), out var multiPlayerRadioButton);
 
         var gameModeSelect = new Grid
         {
@@ -97,6 +97,16 @@ public class ConfigPage : ContentPage
             }
         };
 
+        var colorNameLabel = new Label
+        {
+            Text = "Player 1 Color:",
+            FontFamily = "SourGummySemiBold",
+            TextColor = Colors.Black,
+            HorizontalOptions = LayoutOptions.Center,
+            VerticalOptions = LayoutOptions.Center,
+            FontSize = 20
+        };
+
         var colorOptions = new List<Color>
         {
             Colors.Red,
@@ -107,6 +117,8 @@ public class ConfigPage : ContentPage
             Colors.Orange
         };
 
+        var colorButtons = new List<RadioButton>();
+
         var colorSelect = new Grid();
 
         for (int i = 0; i < colorOptions.Count; i++)
@@ -115,7 +127,57 @@ public class ConfigPage : ContentPage
             var colorOption = CreateColorOption(colorOptions[i], "Color", Preferences.Default.Get<int>("Color", 0) == i, out var colorRadioButton);
             Grid.SetColumn(colorOption, i);
             colorSelect.Children.Add(colorOption);
+            colorButtons.Add(colorRadioButton);
         }
+
+        var player2ColorNameLabel = new Label
+        {
+            Text = "Player 2 Color:",
+            FontFamily = "SourGummySemiBold",
+            TextColor = Colors.Black,
+            HorizontalOptions = LayoutOptions.Center,
+            VerticalOptions = LayoutOptions.Center,
+            FontSize = 20
+        };
+
+        var player2ColorButtons = new List<RadioButton>();
+        var player2ColorSelect = new Grid();
+
+        for (int i = 0; i < colorOptions.Count; i++)
+        {
+            player2ColorSelect.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
+            var colorOption = CreateColorOption(colorOptions[i], "Color2", Preferences.Default.Get<int>("Color2", 1) == i, out var colorRadioButton);
+            Grid.SetColumn(colorOption, i);
+            player2ColorSelect.Children.Add(colorOption);
+            player2ColorButtons.Add(colorRadioButton);
+        }
+
+        var multiplayerOptions = new VerticalStackLayout
+        {
+            Spacing = 12,
+            IsVisible = !singlePlayerRadioButton.IsChecked,
+            Children =
+            {
+                player2ColorNameLabel,
+                player2ColorSelect
+            }
+        };
+
+        singlePlayerRadioButton.CheckedChanged += (_, e) =>
+        {
+            if (e.Value)
+            {
+                multiplayerOptions.IsVisible = false;
+            }
+        };
+
+        multiPlayerRadioButton.CheckedChanged += (_, e) =>
+        {
+            if (e.Value)
+            {
+                multiplayerOptions.IsVisible = true;
+            }
+        };
 
         var submitButton = new Button
         {
@@ -126,18 +188,38 @@ public class ConfigPage : ContentPage
             VerticalOptions = LayoutOptions.Center
         };
 
-        submitButton.Clicked += (_,_) =>
+        submitButton.Clicked += async (_, _) =>
         {
+            var selectedColorIndex = colorButtons.FindIndex(rb => rb.IsChecked);
+            if (selectedColorIndex >= 0)
+            {
+                Preferences.Default.Set("Color", selectedColorIndex);
+            }
+
+            var selectedPlayer2ColorIndex = player2ColorButtons.FindIndex(rb => rb.IsChecked);
+            if (selectedPlayer2ColorIndex >= 0 && !((selectedColorIndex == selectedPlayer2ColorIndex) && multiPlayerRadioButton.IsChecked))
+            {
+                Preferences.Default.Set("Color2", selectedPlayer2ColorIndex);
+            }
+            else
+            {
+                await DisplayAlertAsync("Whoops!", "Players cannot use the same color!", "OK");
+            }
+
+
+
             var selectedGameMode = singlePlayerRadioButton.IsChecked;
             Preferences.Default.Set("GameMode", selectedGameMode);
             Preferences.Default.Set("GameSize", gameSize);
+
+
         };
 
         var verticalLayout = new VerticalStackLayout
         {
             Padding = 16,
             Spacing = 12,
-            Children = { titleLabel, gameModeSelect, gameSizeSelect, colorSelect },
+            Children = { titleLabel, gameModeSelect, gameSizeSelect, colorNameLabel, colorSelect, multiplayerOptions },
             VerticalOptions = LayoutOptions.Center
         };
 
@@ -211,9 +293,10 @@ public class ConfigPage : ContentPage
         var colorBox = new BoxView
         {
             Color = color,
-            WidthRequest = 48,
-            HeightRequest = 48,
-            CornerRadius = 10,
+            WidthRequest = 40,
+            HeightRequest = 40,
+            CornerRadius = 999,
+            BackgroundColor = Colors.Transparent,
             HorizontalOptions = LayoutOptions.Center,
             VerticalOptions = LayoutOptions.Center
         };
@@ -249,7 +332,7 @@ public class ConfigPage : ContentPage
         };
 
         optionRadioButton = new RadioButton
-        { 
+        {
             GroupName = group,
             IsChecked = isChecked,
             Opacity = 0,
