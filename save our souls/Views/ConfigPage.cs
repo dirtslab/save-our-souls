@@ -204,6 +204,7 @@ public class ConfigPage : ContentPage
             else
             {
                 await DisplayAlertAsync("Whoops!", "Players cannot use the same color!", "OK");
+                return;
             }
 
 

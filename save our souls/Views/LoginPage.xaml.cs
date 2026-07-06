@@ -1,4 +1,3 @@
-using CommunityToolkit.Maui.Core.Platform;
 using save_our_souls.ViewModels;
 
 namespace save_our_souls.Views;
@@ -36,6 +35,10 @@ public partial class LoginPage : ContentPage
                     await DisplayAlertAsync("Login Failed", "Invalid username or password.", "OK");
                 }
             }
+            catch (Exception ex)
+            {
+                await DisplayAlertAsync("Login Failed", ex.Message, "OK");
+            }
             finally
             {
                 UsernameEntry.IsEnabled = true;
@@ -50,9 +53,15 @@ public partial class LoginPage : ContentPage
         PasswordEntry.Unfocus();
         UsernameEntry.IsEnabled = false;
         PasswordEntry.IsEnabled = false;
-        await Shell.Current.GoToAsync(nameof(Views.SignUpPage));
-        UsernameEntry.IsEnabled = true;
-        PasswordEntry.IsEnabled = true;
+        try
+        {
+            await Shell.Current.GoToAsync(nameof(Views.SignUpPage));
+        }
+        finally
+        {
+            UsernameEntry.IsEnabled = true;
+            PasswordEntry.IsEnabled = true;
+        }
     }
 
     private void OnShowPasswordToggle(object sender, EventArgs e)
