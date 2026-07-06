@@ -16,28 +16,40 @@ public partial class SignUpPage : ContentPage
 
     private async void OnCreateAccountClicked(object sender, EventArgs e)
     {
-        if (signUpVM != null)
+        if (signUpVM == null)
+            return;
+
+        try
         {
-            try
+            bool success = await signUpVM.SignUpUser();
+            if (!success)
             {
-                bool success = await signUpVM.SignUpUser();
-                if (!success)
+                await DisplayAlertAsync("Sign Up Failed", "Please enter a valid username and password.", "OK");
+                return;
+            }
+
+            if (DeviceInfo.Platform == DevicePlatform.WinUI)
+            {
+                await DisplayAlertAsync("Success", "Account was successfully created!", "OK");
+            }
+            else
+            {
+                try
                 {
-                    await DisplayAlertAsync("Sign Up Failed", "Please enter a valid username and password.", "OK");
-                    return;
+                    var toast = Toast.Make("Account was successfully created!", CommunityToolkit.Maui.Core.ToastDuration.Long, 14);
+                    await toast.Show();
                 }
-
-                var toast = Toast.Make("Account was successfully created!", CommunityToolkit.Maui.Core.ToastDuration.Long, 14);
-
-                await toast.Show();
-
-                await Navigation.PopAsync();
-            }
-            catch (Exception ex)
-            {
-                await DisplayAlertAsync("Sign Up Failed", ex.Message, "OK");
+                catch
+                {
+                    await DisplayAlertAsync("Success", "Account was successfully created!", "OK");
+                }
             }
 
+            await Shell.Current.GoToAsync("..");
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlertAsync("Sign Up Failed", ex.Message, "OK");
         }
     }
 

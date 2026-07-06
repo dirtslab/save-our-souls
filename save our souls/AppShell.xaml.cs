@@ -1,4 +1,6 @@
-﻿namespace save_our_souls
+﻿using save_our_souls.Views;
+
+namespace save_our_souls
 {
     public partial class AppShell : Shell
     {
@@ -6,6 +8,7 @@
         {
             InitializeComponent();
             Routing.RegisterRoute(nameof(Views.SignUpPage), typeof(Views.SignUpPage));
+            Routing.RegisterRoute(nameof(Views.ConfigPage), typeof(Views.ConfigPage));
         }
     }
 }
