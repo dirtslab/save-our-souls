@@ -43,7 +43,9 @@ public class GamePage : ContentPage
                     PressedScale = 0.8,
                     ShouldMakeChildrenInputTransparent = true,
                     Command = gameVM.SetSInTile,
-                    CommandParameter = cellIndex
+                    CommandParameter = cellIndex,
+                    LongPressCommand = gameVM.SetOInTile,
+                    LongPressCommandParameter = cellIndex
                 };
 
                 var cellLabel = new Label
