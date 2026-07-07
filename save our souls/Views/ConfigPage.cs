@@ -152,15 +152,7 @@ public class ConfigPage : ContentPage
             FontSize = 20
         };
 
-        var colorOptions = new List<Color>
-        {
-            Colors.Red,
-            Colors.Green,
-            Colors.Blue,
-            Colors.Yellow,
-            Colors.Purple,
-            Colors.Orange
-        };
+        var colorOptions = ConfigColors.ColorOptions;
 
         var colorButtons = new List<RadioButton>();
 
