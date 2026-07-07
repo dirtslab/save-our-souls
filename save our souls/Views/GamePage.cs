@@ -9,7 +9,7 @@ public class GamePage : ContentPage
     {
         BindingContext = gameVM;
 
-        Padding = new Thickness(16, 16);
+        Padding = new Thickness(16, 32);
 
         var boardGrid = new Grid
         {
@@ -87,8 +87,26 @@ public class GamePage : ContentPage
             boardGrid.HeightRequest = sideLength;
         };
 
-        
+        Label playerIndicator = new Label
+        {
+            FontFamily = "SourGummySemiBold",
+            FontSize = 40,
+            TextColor = Colors.Black,
+            VerticalOptions = LayoutOptions.Center,
+            HorizontalOptions = LayoutOptions.Center
+        };
 
-        Content = boardGrid;
+        playerIndicator.SetBinding(Label.TextProperty, nameof(GameVM.PlayerIndicator), mode: BindingMode.OneWay);
+
+        FlexLayout layout = new FlexLayout
+        {
+            HorizontalOptions = LayoutOptions.Fill,
+            VerticalOptions = LayoutOptions.Start,
+            Wrap = Microsoft.Maui.Layouts.FlexWrap.Wrap,
+            JustifyContent = Microsoft.Maui.Layouts.FlexJustify.SpaceAround,
+            Children = { playerIndicator, boardGrid }
+        };
+
+        Content = layout;
     }
 }

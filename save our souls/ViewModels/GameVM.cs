@@ -11,34 +11,44 @@ public partial class GameVM : ObservableObject
 
     public ObservableCollection<string> CellLabels { get; }
 
+    public string PlayerIndicator { get; set; }
+    private int player;
+
     public GameVM()
     {
         int size = Preferences.Default.Get("GameSize", 3);
         CellLabels = new ObservableCollection<string>(Enumerable.Repeat(string.Empty, size * size));
+        player = 0;
+        SwapPlayer();
 
-        SetSInTile = new Command<int>(SetSInBoard);
-        SetOInTile = new Command<int>(SetOInBoard);
+        SetSInTile = new Command<int>(n => SetInBoard(n, "S"));
+        SetOInTile = new Command<int>(n => SetInBoard(n, "O"));
     }
 
-    private void SetSInBoard(int n)
+    private void SwapPlayer()
+    {
+        if (player == 1)
+        {
+            player = 2;
+            PlayerIndicator = "Player 2";
+        }
+        else
+        {
+            player = 1;
+            PlayerIndicator = "Player 1";
+        }
+        OnPropertyChanged(nameof(PlayerIndicator));
+    }
+
+    private void SetInBoard(int n, string value)
     {
         if (n < 0 || n >= CellLabels.Count || !CellLabels[n].Equals(string.Empty))
         {
             return;
         }
 
-        CellLabels[n] = "S";
+        CellLabels[n] = value;
         OnPropertyChanged(nameof(CellLabels));
-    }
-
-    private void SetOInBoard(int n)
-    {
-        if (n < 0 || n >= CellLabels.Count || !CellLabels[n].Equals(string.Empty))
-        {
-            return;
-        }
-
-        CellLabels[n] = "O";
-        OnPropertyChanged(nameof(CellLabels));
+        SwapPlayer();
     }
 }
