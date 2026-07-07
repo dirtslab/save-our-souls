@@ -154,6 +154,14 @@ public partial class GameVM : ObservableObject
         int startIndex = startRow * boardSize + startColumn;
         int endIndex = endRow * boardSize + endColumn;
         Color color;
+
+
+        bool exists = SosLineSegments.Any(s =>
+            (s.StartIndex == startIndex && s.EndIndex == endIndex) ||
+            (s.StartIndex == endIndex && s.EndIndex == startIndex));
+
+        if (exists) return;
+
         if (cPlayer == 1)
         {
             color = ConfigColors.ColorOptions[Preferences.Default.Get("Color", 0)];
@@ -165,14 +173,7 @@ public partial class GameVM : ObservableObject
             Player2Score++;
         }
 
-        bool exists = SosLineSegments.Any(s =>
-            (s.StartIndex == startIndex && s.EndIndex == endIndex) ||
-            (s.StartIndex == endIndex && s.EndIndex == startIndex));
-
-        if (!exists)
-        {
-            SosLineSegments.Add(new SosLineSegment(startIndex, endIndex, color));
-        }
+        SosLineSegments.Add(new SosLineSegment(startIndex, endIndex, color));
 
         OnPropertyChanged(nameof(Player1Score));
         OnPropertyChanged(nameof(Player2Score));
