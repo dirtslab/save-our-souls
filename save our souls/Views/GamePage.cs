@@ -1,11 +1,15 @@
-﻿namespace save_our_souls.Views;
+﻿using CommunityToolkit.Maui.Behaviors;
+using save_our_souls.ViewModels;
+
+namespace save_our_souls.Views;
 
 public class GamePage : ContentPage
 {
-    public GamePage()
+    public GamePage(GameVM gameVM)
     {
-        Title = "Game";
-        Padding = new Thickness(16, 0);
+        BindingContext = gameVM;
+
+        Padding = new Thickness(16, 16);
 
         var boardGrid = new Grid
         {
@@ -29,11 +33,38 @@ public class GamePage : ContentPage
         {
             for (int col = 0; col < size; col++)
             {
+                int cellIndex = (row * size) + col;
+
+                var touchBehavior = new TouchBehavior
+                {
+                    DefaultAnimationDuration = 250,
+                    DefaultAnimationEasing = Easing.CubicInOut,
+                    PressedOpacity = 0.6,
+                    PressedScale = 0.8,
+                    ShouldMakeChildrenInputTransparent = true,
+                    Command = gameVM.SetSInTile,
+                    CommandParameter = cellIndex
+                };
+
+                var cellLabel = new Label
+                {
+                    FontFamily = "SourGummySemiBold",
+                    FontSize = 22,
+                    TextColor = Colors.Black,
+                    VerticalOptions = LayoutOptions.Center,
+                    HorizontalOptions = LayoutOptions.Center
+                };
+
                 var cell = new Border
                 {
                     BackgroundColor = Colors.White,
-                    StrokeThickness = 0
+                    StrokeThickness = 0,
+                    Content = cellLabel
                 };
+
+                cell.Behaviors.Add(touchBehavior);
+
+                cellLabel.SetBinding(Label.TextProperty, $"CellLabels[{cellIndex}]", mode: BindingMode.TwoWay);
 
                 boardGrid.Add(cell, col, row);
             }
@@ -53,6 +84,8 @@ public class GamePage : ContentPage
             boardGrid.WidthRequest = sideLength;
             boardGrid.HeightRequest = sideLength;
         };
+
+        
 
         Content = boardGrid;
     }

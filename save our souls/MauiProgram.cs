@@ -26,6 +26,8 @@ namespace save_our_souls
             builder.Services.AddTransient<Views.SignUpPage>();
             builder.Services.AddTransient<ViewModels.ConfigVM>();
             builder.Services.AddTransient<Views.ConfigPage>();
+            builder.Services.AddTransient<ViewModels.GameVM>();
+            builder.Services.AddTransient<Views.GamePage>();
 
 #if DEBUG
             builder.Logging.AddDebug();
