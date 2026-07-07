@@ -152,15 +152,7 @@ public class ConfigPage : ContentPage
             FontSize = 20
         };
 
-        var colorOptions = new List<Color>
-        {
-            Colors.Red,
-            Colors.Green,
-            Colors.Blue,
-            Colors.Yellow,
-            Colors.Purple,
-            Colors.Orange
-        };
+        var colorOptions = ConfigColors.ColorOptions;
 
         var colorButtons = new List<RadioButton>();
 
@@ -226,7 +218,7 @@ public class ConfigPage : ContentPage
 
         var submitButton = new Button
         {
-            Text = "Let's Play!",
+            Text = "Start",
             FontFamily = "SourGummySemiBold",
             BackgroundColor = Colors.DarkCyan,
             HorizontalOptions = LayoutOptions.Center,
@@ -258,6 +250,14 @@ public class ConfigPage : ContentPage
             Preferences.Default.Set("GameMode", selectedGameMode);
             Preferences.Default.Set("GameSize", gameSize);
 
+            try
+            {
+                await Shell.Current.GoToAsync(nameof(Views.GamePage));
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlertAsync("Error", ex.Message, "OK");
+            }
 
         };
 

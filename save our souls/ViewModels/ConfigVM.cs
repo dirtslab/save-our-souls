@@ -3,6 +3,19 @@ using System.Runtime.CompilerServices;
 
 namespace save_our_souls.ViewModels
 {
+    static class ConfigColors
+    {
+        public static readonly List<Color> ColorOptions = new List<Color>
+        {
+            Colors.Red,
+            Colors.Green,
+            Colors.Blue,
+            Colors.Yellow,
+            Colors.Purple,
+            Colors.Orange
+        };
+    }
+
     public class ConfigVM : INotifyPropertyChanged
     {
         private readonly Services.UserAccountDatabase _userAccountDatabase;
