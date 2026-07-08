@@ -423,27 +423,17 @@ public class ConfigPage : ContentPage
     private async void OnSubmitButtonClicked(object sender, EventArgs e)
     {
         var selectedColorIndex = _colorButtons.FindIndex(rb => rb.IsChecked);
-        if (selectedColorIndex >= 0)
-        {
-            Preferences.Default.Set("Color", selectedColorIndex);
-        }
 
         var selectedPlayer2ColorIndex = _player2ColorButtons.FindIndex(rb => rb.IsChecked);
-        if (selectedPlayer2ColorIndex >= 0 && !((selectedColorIndex == selectedPlayer2ColorIndex) && _multiPlayerRadioButton.IsChecked))
-        {
-            Preferences.Default.Set("Color2", selectedPlayer2ColorIndex);
-        }
-        else
+        if (((selectedColorIndex == selectedPlayer2ColorIndex) && _multiPlayerRadioButton.IsChecked))
         {
             await DisplayAlertAsync("Whoops!", "Players cannot use the same color!", "OK");
             return;
         }
 
-
-
         var selectedGameMode = _singlePlayerRadioButton.IsChecked;
-        Preferences.Default.Set("GameMode", selectedGameMode);
-        Preferences.Default.Set("GameSize", _gameSize);
+
+        _configVM.savePreferences(selectedGameMode, _gameSize, selectedColorIndex, selectedPlayer2ColorIndex);
 
         try
         {
