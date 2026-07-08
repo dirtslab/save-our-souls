@@ -401,7 +401,7 @@ public class ConfigPage : ContentPage
         }
     }
 
-    private void OnMoreButtonClicked(object sender, EventArgs e)
+    private void OnMoreButtonClicked(object? sender, EventArgs e)
     {
         if (_gameSize < 9)
         {
@@ -411,7 +411,7 @@ public class ConfigPage : ContentPage
     }
 
 
-    private void OnLessButtonClicked(object sender, EventArgs e)
+    private void OnLessButtonClicked(object? sender, EventArgs e)
     {
         if (_gameSize > 3)
         {
@@ -420,7 +420,7 @@ public class ConfigPage : ContentPage
         }
     }
 
-    private async void OnSubmitButtonClicked(object sender, EventArgs e)
+    private async void OnSubmitButtonClicked(object? sender, EventArgs e)
     {
         var selectedColorIndex = _colorButtons.FindIndex(rb => rb.IsChecked);
 

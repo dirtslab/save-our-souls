@@ -6,13 +6,21 @@ namespace save_our_souls.Views;
 
 public class GamePage : ContentPage
 {
+
+    private readonly GameVM _gameVM;
+    private Grid _boardGrid = null!;
+    private Grid _boardOverlay = null!;
+    private Grid _sosLineLayer = null!;
+    private int _size = Preferences.Default.Get("GameSize", 3);
+
     public GamePage(GameVM gameVM)
     {
-        BindingContext = gameVM;
+        _gameVM = gameVM;
+        BindingContext = _gameVM;
 
         Padding = new Thickness(16, 32);
 
-        var boardGrid = new Grid
+        _boardGrid = new Grid
         {
             RowSpacing = 2,
             ColumnSpacing = 2,
@@ -22,19 +30,17 @@ public class GamePage : ContentPage
             Padding = 2
         };
 
-        int size = Preferences.Default.Get("GameSize", 3);
-
-        for (int i = 0; i < size; i++)
+        for (int i = 0; i < _size; i++)
         {
-            boardGrid.RowDefinitions.Add(new RowDefinition(GridLength.Star));
-            boardGrid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
+            _boardGrid.RowDefinitions.Add(new RowDefinition(GridLength.Star));
+            _boardGrid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
         }
 
-        for (int row = 0; row < size; row++)
+        for (int row = 0; row < _size; row++)
         {
-            for (int col = 0; col < size; col++)
+            for (int col = 0; col < _size; col++)
             {
-                int cellIndex = (row * size) + col;
+                int cellIndex = (row * _size) + col;
 
                 var touchBehavior = new TouchBehavior
                 {
@@ -43,9 +49,9 @@ public class GamePage : ContentPage
                     PressedOpacity = 0.6,
                     PressedScale = 0.8,
                     ShouldMakeChildrenInputTransparent = true,
-                    Command = gameVM.SetSInTile,
+                    Command = _gameVM.SetSInTile,
                     CommandParameter = cellIndex,
-                    LongPressCommand = gameVM.SetOInTile,
+                    LongPressCommand = _gameVM.SetOInTile,
                     LongPressCommandParameter = cellIndex
                 };
 
@@ -69,82 +75,30 @@ public class GamePage : ContentPage
 
                 cellLabel.SetBinding(Label.TextProperty, $"CellLabels[{cellIndex}]", mode: BindingMode.TwoWay);
 
-                boardGrid.Add(cell, col, row);
+                _boardGrid.Add(cell, col, row);
             }
         }
 
-        var sosLineLayer = new Grid
+        _sosLineLayer = new Grid
         {
             InputTransparent = true
         };
 
-        var boardOverlay = new Grid
+        _boardOverlay = new Grid
         {
             HorizontalOptions = LayoutOptions.Center,
             VerticalOptions = LayoutOptions.Center,
-            Children = { boardGrid, sosLineLayer }
+            Children = { _boardGrid, _sosLineLayer }
         };
 
-        void UpdateSosLines()
-        {
-            if (boardGrid.Width <= 0 || boardGrid.Height <= 0)
-            {
-                return;
-            }
 
-            sosLineLayer.Children.Clear();
 
-            if (gameVM.SosLineSegments.Count == 0)
-            {
-                return;
-            }
-
-            var cellWidth = (boardGrid.Width - boardGrid.Padding.HorizontalThickness - ((size - 1) * boardGrid.ColumnSpacing)) / size;
-            var cellHeight = (boardGrid.Height - boardGrid.Padding.VerticalThickness - ((size - 1) * boardGrid.RowSpacing)) / size;
-
-            foreach (var segment in gameVM.SosLineSegments)
-            {
-                int startRow = segment.StartIndex / size;
-                int startColumn = segment.StartIndex % size;
-                int endRow = segment.EndIndex / size;
-                int endColumn = segment.EndIndex % size;
-
-                var line = new Line
-                {
-                    Stroke = segment.LineColor,
-                    Opacity = 0.5,
-                    StrokeThickness = 5,
-                    InputTransparent = true,
-                    X1 = boardGrid.Padding.Left + (startColumn * (cellWidth + boardGrid.ColumnSpacing)) + (cellWidth / 2),
-                    Y1 = boardGrid.Padding.Top + (startRow * (cellHeight + boardGrid.RowSpacing)) + (cellHeight / 2),
-                    X2 = boardGrid.Padding.Left + (endColumn * (cellWidth + boardGrid.ColumnSpacing)) + (cellWidth / 2),
-                    Y2 = boardGrid.Padding.Top + (endRow * (cellHeight + boardGrid.RowSpacing)) + (cellHeight / 2)
-                };
-
-                sosLineLayer.Children.Add(line);
-            }
-        }
-
-        boardGrid.SizeChanged += (_, _) => UpdateSosLines();
-        gameVM.SosLineSegments.CollectionChanged += (_, _) => UpdateSosLines();
+        _boardGrid.SizeChanged += (_, _) => UpdateSosLines(true);
+        _gameVM.SosLineSegments.CollectionChanged += (_, _) => UpdateSosLines();
 
         SizeChanged += (_, _) =>
         {
-            if (Width <= 0 || Height <= 0)
-            {
-                return;
-            }
 
-            var availableWidth = Math.Max(0, Width - Padding.Left - Padding.Right);
-            var availableHeight = Math.Max(0, Height - Padding.Top - Padding.Bottom);
-            var sideLength = Math.Min(availableWidth, availableHeight);
-
-            boardGrid.WidthRequest = sideLength;
-            boardGrid.HeightRequest = sideLength;
-            boardOverlay.WidthRequest = sideLength;
-            boardOverlay.HeightRequest = sideLength;
-
-            UpdateSosLines();
         };
 
         Label playerIndicator = new Label
@@ -204,9 +158,80 @@ public class GamePage : ContentPage
             VerticalOptions = LayoutOptions.Start,
             Wrap = Microsoft.Maui.Layouts.FlexWrap.Wrap,
             JustifyContent = Microsoft.Maui.Layouts.FlexJustify.SpaceAround,
-            Children = { playerIndicator, boardOverlay, scores }
+            Children = { playerIndicator, _boardOverlay, scores }
         };
 
         Content = layout;
+    }
+
+    protected override void OnSizeAllocated(double width, double height)
+    {
+        if (width <= 0 || height <= 0)
+        {
+            return;
+        }
+
+        var availableWidth = Math.Max(0, width - Padding.Left - Padding.Right);
+        var availableHeight = Math.Max(0, height - Padding.Top - Padding.Bottom);
+        var sideLength = Math.Min(availableWidth, availableHeight);
+
+        _boardGrid.WidthRequest = sideLength;
+        _boardGrid.HeightRequest = sideLength;
+        _boardOverlay.WidthRequest = sideLength;
+        _boardOverlay.HeightRequest = sideLength;
+        base.OnSizeAllocated(width, height);
+    }
+
+    private void UpdateSosLines(bool clear = false)
+    {
+        if (_boardGrid.Width <= 0 || _boardGrid.Height <= 0)
+        {
+            return;
+        }
+
+        if (clear)
+        {
+            _sosLineLayer.Children.Clear();
+        }
+
+        if (_gameVM.SosLineSegments.Count == 0)
+        {
+            return;
+        }
+
+        var startSegmentIndex = clear ? 0 : _sosLineLayer.Children.Count;
+
+        if (startSegmentIndex > _gameVM.SosLineSegments.Count)
+        {
+            _sosLineLayer.Children.Clear();
+            startSegmentIndex = 0;
+        }
+
+        var cellWidth = (_boardGrid.Width - _boardGrid.Padding.HorizontalThickness - ((_size - 1) * _boardGrid.ColumnSpacing)) / _size;
+        var cellHeight = (_boardGrid.Height - _boardGrid.Padding.VerticalThickness - ((_size - 1) * _boardGrid.RowSpacing)) / _size;
+
+        for (int i = startSegmentIndex; i < _gameVM.SosLineSegments.Count; i++)
+        {
+            var segment = _gameVM.SosLineSegments[i];
+
+            int startRow = segment.StartIndex / _size;
+            int startColumn = segment.StartIndex % _size;
+            int endRow = segment.EndIndex / _size;
+            int endColumn = segment.EndIndex % _size;
+
+            var line = new Line
+            {
+                Stroke = segment.LineColor,
+                Opacity = 0.5,
+                StrokeThickness = 5,
+                InputTransparent = true,
+                X1 = _boardGrid.Padding.Left + (startColumn * (cellWidth + _boardGrid.ColumnSpacing)) + (cellWidth / 2),
+                Y1 = _boardGrid.Padding.Top + (startRow * (cellHeight + _boardGrid.RowSpacing)) + (cellHeight / 2),
+                X2 = _boardGrid.Padding.Left + (endColumn * (cellWidth + _boardGrid.ColumnSpacing)) + (cellWidth / 2),
+                Y2 = _boardGrid.Padding.Top + (endRow * (cellHeight + _boardGrid.RowSpacing)) + (cellHeight / 2)
+            };
+
+            _sosLineLayer.Children.Add(line);
+        }
     }
 }
