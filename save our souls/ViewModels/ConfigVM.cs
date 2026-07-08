@@ -84,7 +84,7 @@ namespace save_our_souls.ViewModels
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        internal void savePreferences(bool selectedGameMode, int gameSize, int selectedColorIndex, int selectedPlayer2ColorIndex)
+        internal void SavePreferences(bool selectedGameMode, int gameSize, int selectedColorIndex, int selectedPlayer2ColorIndex)
         {
             Preferences.Default.Set("Color", selectedColorIndex);
             Preferences.Default.Set("Color2", selectedPlayer2ColorIndex);

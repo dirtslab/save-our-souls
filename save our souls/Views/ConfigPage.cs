@@ -425,6 +425,13 @@ public class ConfigPage : ContentPage
         var selectedColorIndex = _colorButtons.FindIndex(rb => rb.IsChecked);
 
         var selectedPlayer2ColorIndex = _player2ColorButtons.FindIndex(rb => rb.IsChecked);
+
+        if (selectedPlayer2ColorIndex < 0 || selectedColorIndex < 0)
+        {
+            await DisplayAlertAsync("Whoops!", "Please select a color for both players!", "OK");
+            return;
+        }
+
         if (((selectedColorIndex == selectedPlayer2ColorIndex) && _multiPlayerRadioButton.IsChecked))
         {
             await DisplayAlertAsync("Whoops!", "Players cannot use the same color!", "OK");
@@ -433,7 +440,7 @@ public class ConfigPage : ContentPage
 
         var selectedGameMode = _singlePlayerRadioButton.IsChecked;
 
-        _configVM.savePreferences(selectedGameMode, _gameSize, selectedColorIndex, selectedPlayer2ColorIndex);
+        _configVM.SavePreferences(selectedGameMode, _gameSize, selectedColorIndex, selectedPlayer2ColorIndex);
 
         try
         {
