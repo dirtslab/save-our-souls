@@ -34,6 +34,9 @@ public partial class GameVM : ObservableObject
     public int Player1Score { get; set; }
     public int Player2Score { get; set; }
 
+    public int Winner = -1; // 0 for draw, 1 for player 1, 2 for player 2
+
+    private bool isGameOver => CellLabels.All(label => !string.IsNullOrEmpty(label));
     private int player;
     private int boardSize;
     private bool singlePlayerMode;
@@ -83,6 +86,25 @@ public partial class GameVM : ObservableObject
 
         CellLabels[n] = value;
         OnPropertyChanged(nameof(CellLabels));
+
+        if (isGameOver)
+        {
+            CheckForSOS(n);
+            if (Player1Score > Player2Score)
+            {
+                Winner = 1;
+            }
+            else if (Player2Score > Player1Score)
+            {
+                Winner = 2;
+            }
+            else
+            {
+                Winner = 0;
+            }
+            OnPropertyChanged(nameof(Winner));
+            return;
+        }
 
         if (!CheckForSOS(n))
         {

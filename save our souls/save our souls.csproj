@@ -82,4 +82,7 @@
 	  </MauiXaml>
 	</ItemGroup>
 
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Release|net10.0-android'">
+		<AndroidPackageFormats>apk</AndroidPackageFormats>
+	</PropertyGroup>
 </Project>
