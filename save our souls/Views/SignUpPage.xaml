@@ -32,8 +32,22 @@
                        VerticalOptions="Center"
                        HorizontalOptions="Center" />
                 <StackLayout>
-                    <Button Text="Add profile photo"
-                            Command="{Binding ShowPhotoOptionsCommand}" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Button x:Name="AddProfilePhotoButton"
+                                Text="Add profile photo"
+                                Grid.Column="0"
+                                Command="{Binding ShowPhotoOptionsCommand}" />
+                        <Image Source="{Binding Photo}"
+                               Grid.Column="1"
+                               Aspect="AspectFill"
+                               MaximumHeightRequest="{Binding Source={x:Reference AddProfilePhotoButton}, Path=Height}"
+                               WidthRequest="{Binding Source={x:Reference AddProfilePhotoButton}, Path=Height}" />
+                    </Grid>
+                    
 
                     <Entry x:Name="NameEntry"
                            Placeholder="Name"
