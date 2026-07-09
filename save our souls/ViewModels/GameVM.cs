@@ -36,16 +36,18 @@ public partial class GameVM : ObservableObject
 
     private int player;
     private int boardSize;
+    private bool singlePlayerMode;
 
     public GameVM()
     {
+        singlePlayerMode = Preferences.Default.Get("GameMode", false);
         boardSize = Preferences.Default.Get("GameSize", 3);
         CellLabels = new ObservableCollection<string>(Enumerable.Repeat(string.Empty, boardSize * boardSize));
         SosLineSegments = [];
         Player1Score = Player2Score = 0;
 
         P1Color = ConfigColors.ColorOptions[Preferences.Default.Get("Color", 0)];
-        P2Color = ConfigColors.ColorOptions[Preferences.Default.Get("Color2", 0)];
+        P2Color = singlePlayerMode ? Colors.Gray : ConfigColors.ColorOptions[Preferences.Default.Get("Color2", 0)];
 
         player = 0;
         SwapPlayer();
@@ -85,6 +87,10 @@ public partial class GameVM : ObservableObject
         if (!CheckForSOS(n))
         {
             SwapPlayer();
+        }
+        if (singlePlayerMode && player == 2)
+        {
+            MakeAIMove();
         }
     }
 
@@ -164,12 +170,12 @@ public partial class GameVM : ObservableObject
 
         if (cPlayer == 1)
         {
-            color = ConfigColors.ColorOptions[Preferences.Default.Get("Color", 0)];
+            color = P1Color;
             Player1Score++;
         }
         else
         {
-            color = ConfigColors.ColorOptions[Preferences.Default.Get("Color2", 0)];
+            color = P2Color;
             Player2Score++;
         }
 
@@ -192,5 +198,92 @@ public partial class GameVM : ObservableObject
             "O" => 1,
             _ => -1
         };
+    }
+
+    private void MakeAIMove()
+    {
+        var emptyIndices = CellLabels
+            .Select((value, index) => new { value, index })
+            .Where(x => x.value == string.Empty)
+            .Select(x => x.index)
+            .ToList();
+
+        if (emptyIndices.Count == 0)
+        {
+            return;
+        }
+
+        static (int dr, int dc)[] GetAllDirections() =>
+        [
+            (-1, -1), (-1, 0), (-1, 1),
+            (0, -1),            (0, 1),
+            (1, -1),  (1, 0),   (1, 1)
+        ];
+
+        static (int dr, int dc)[] GetAxisDirections() =>
+        [
+            (0, 1),
+            (1, 0),
+            (1, 1),
+            (1, -1)
+        ];
+
+        bool CreatesSos(int index, string letter)
+        {
+            int row = index / boardSize;
+            int column = index % boardSize;
+
+            if (letter == "S")
+            {
+                foreach (var (dr, dc) in GetAllDirections())
+                {
+                    if (GetAtPosition(row + dr, column + dc) == 1 &&
+                        GetAtPosition(row + (2 * dr), column + (2 * dc)) == 0)
+                    {
+                        return true;
+                    }
+                }
+            }
+            else
+            {
+                foreach (var (dr, dc) in GetAxisDirections())
+                {
+                    if (GetAtPosition(row - dr, column - dc) == 0 &&
+                        GetAtPosition(row + dr, column + dc) == 0)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        List<(int index, string value)> sosMoves = [];
+        foreach (int index in emptyIndices)
+        {
+            if (CreatesSos(index, "S"))
+            {
+                sosMoves.Add((index, "S"));
+            }
+
+            if (CreatesSos(index, "O"))
+            {
+                sosMoves.Add((index, "O"));
+            }
+        }
+
+        Random rand = Random.Shared;
+
+        if (sosMoves.Count > 0)
+        {
+            var move = sosMoves[rand.Next(sosMoves.Count)];
+            SetInBoard(move.index, move.value);
+            return;
+        }
+
+        int randomIndex = emptyIndices[rand.Next(emptyIndices.Count)];
+        string randomValue = rand.Next(2) == 0 ? "S" : "O";
+        SetInBoard(randomIndex, randomValue);
     }
 }
