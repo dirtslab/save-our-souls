@@ -96,11 +96,6 @@ public class GamePage : ContentPage
         _boardGrid.SizeChanged += (_, _) => UpdateSosLines(true);
         _gameVM.SosLineSegments.CollectionChanged += (_, _) => UpdateSosLines();
 
-        SizeChanged += (_, _) =>
-        {
-
-        };
-
         Label playerIndicator = new Label
         {
             FontFamily = "SourGummySemiBold",
@@ -166,6 +161,7 @@ public class GamePage : ContentPage
 
     protected override void OnSizeAllocated(double width, double height)
     {
+        base.OnSizeAllocated(width, height);
         if (width <= 0 || height <= 0)
         {
             return;
@@ -179,7 +175,6 @@ public class GamePage : ContentPage
         _boardGrid.HeightRequest = sideLength;
         _boardOverlay.WidthRequest = sideLength;
         _boardOverlay.HeightRequest = sideLength;
-        base.OnSizeAllocated(width, height);
     }
 
     private void UpdateSosLines(bool clear = false)
