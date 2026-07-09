@@ -4,9 +4,22 @@ namespace save_our_souls.Views;
 
 public class ConfigPage : ContentPage
 {
+    private readonly ConfigVM _configVM;
+    private readonly List<RadioButton> _colorButtons = new();
+    private readonly List<RadioButton> _player2ColorButtons = new();
+    private RadioButton _singlePlayerRadioButton = null!;
+    private RadioButton _multiPlayerRadioButton = null!;
+    private VerticalStackLayout _multiplayerOptions = null!;
+    private Button _lessButton = null!;
+    private Button _moreButton = null!;
+    private Button _submitButton = null!;
+    private int _gameSize = Preferences.Default.Get("GameSize", 5);
+    private Label _sizeLabel = null!;
+
     public ConfigPage(ConfigVM configVM)
     {
-        BindingContext = configVM;
+        _configVM = configVM;
+        BindingContext = _configVM;
 
         var nameLabel = new Label
         {
@@ -47,8 +60,6 @@ public class ConfigPage : ContentPage
             ColumnSpacing = 12
         };
 
-        _ = configVM.LoadProfileImageAsync();
-
         var titleLabel = new Label
         {
             Text = "Configure Game",
@@ -58,8 +69,8 @@ public class ConfigPage : ContentPage
             HorizontalOptions = LayoutOptions.Center
         };
 
-        var singlePlayerOption = CreateLabelOption("Singleplayer", "GameMode", Preferences.Default.Get<bool>("GameMode", true), out var singlePlayerRadioButton);
-        var multiPlayerOption = CreateLabelOption("Multiplayer", "GameMode", !Preferences.Default.Get<bool>("GameMode", true), out var multiPlayerRadioButton);
+        var singlePlayerOption = CreateLabelOption("Singleplayer", "GameMode", Preferences.Default.Get<bool>("GameMode", true), out _singlePlayerRadioButton);
+        var multiPlayerOption = CreateLabelOption("Multiplayer", "GameMode", !Preferences.Default.Get<bool>("GameMode", true), out _multiPlayerRadioButton);
 
         var gameModeSelect = new Grid
         {
@@ -77,37 +88,19 @@ public class ConfigPage : ContentPage
         gameModeSelect.Children.Add(multiPlayerOption);
         Grid.SetColumn(multiPlayerOption, 1);
 
-        var lessButton = CreateCountButton("-");
-        var moreButton = CreateCountButton("+");
+        _lessButton = CreateCountButton("-");
+        _moreButton = CreateCountButton("+");
 
-        int gameSize = Preferences.Default.Get("GameSize", 5);
-
-        var sizeLabel = new Label
+        _sizeLabel = new Label
         {
-            Text = $"{gameSize}x{gameSize}",
+            Text = $"{_gameSize}x{_gameSize}",
             FontFamily = "SourGummySemiBold",
             HorizontalOptions = LayoutOptions.Center,
             VerticalOptions = LayoutOptions.Center,
             FontSize = 30
         };
 
-        moreButton.Clicked += (_, _) =>
-        {
-            if (gameSize < 9)
-            {
-                gameSize++;
-                sizeLabel.Text = $"{gameSize}x{gameSize}";
-            }
-        };
 
-        lessButton.Clicked += (_, _) =>
-        {
-            if (gameSize > 3)
-            {
-                gameSize--;
-                sizeLabel.Text = $"{gameSize}x{gameSize}";
-            }
-        };
 
         var sizeNameLabel = new Label
         {
@@ -120,9 +113,9 @@ public class ConfigPage : ContentPage
         };
 
         Grid.SetColumn(sizeNameLabel, 0);
-        Grid.SetColumn(lessButton, 1);
-        Grid.SetColumn(sizeLabel, 2);
-        Grid.SetColumn(moreButton, 3);
+        Grid.SetColumn(_lessButton, 1);
+        Grid.SetColumn(_sizeLabel, 2);
+        Grid.SetColumn(_moreButton, 3);
 
         var gameSizeSelect = new Grid
         {
@@ -136,9 +129,9 @@ public class ConfigPage : ContentPage
             Children =
             {
                 sizeNameLabel,
-                lessButton,
-                sizeLabel,
-                moreButton
+                _lessButton,
+                _sizeLabel,
+                _moreButton
             }
         };
 
@@ -154,8 +147,6 @@ public class ConfigPage : ContentPage
 
         var colorOptions = ConfigColors.ColorOptions;
 
-        var colorButtons = new List<RadioButton>();
-
         var colorSelect = new Grid();
 
         for (int i = 0; i < colorOptions.Count; i++)
@@ -164,7 +155,7 @@ public class ConfigPage : ContentPage
             var colorOption = CreateColorOption(colorOptions[i], "Color", Preferences.Default.Get<int>("Color", 0) == i, out var colorRadioButton);
             Grid.SetColumn(colorOption, i);
             colorSelect.Children.Add(colorOption);
-            colorButtons.Add(colorRadioButton);
+            _colorButtons.Add(colorRadioButton);
         }
 
         var player2ColorNameLabel = new Label
@@ -177,7 +168,6 @@ public class ConfigPage : ContentPage
             FontSize = 20
         };
 
-        var player2ColorButtons = new List<RadioButton>();
         var player2ColorSelect = new Grid();
 
         for (int i = 0; i < colorOptions.Count; i++)
@@ -186,13 +176,13 @@ public class ConfigPage : ContentPage
             var colorOption = CreateColorOption(colorOptions[i], "Color2", Preferences.Default.Get<int>("Color2", 1) == i, out var colorRadioButton);
             Grid.SetColumn(colorOption, i);
             player2ColorSelect.Children.Add(colorOption);
-            player2ColorButtons.Add(colorRadioButton);
+            _player2ColorButtons.Add(colorRadioButton);
         }
 
-        var multiplayerOptions = new VerticalStackLayout
+        _multiplayerOptions = new VerticalStackLayout
         {
             Spacing = 12,
-            IsVisible = !singlePlayerRadioButton.IsChecked,
+            IsVisible = !_singlePlayerRadioButton.IsChecked,
             Children =
             {
                 player2ColorNameLabel,
@@ -200,23 +190,9 @@ public class ConfigPage : ContentPage
             }
         };
 
-        singlePlayerRadioButton.CheckedChanged += (_, e) =>
-        {
-            if (e.Value)
-            {
-                multiplayerOptions.IsVisible = false;
-            }
-        };
 
-        multiPlayerRadioButton.CheckedChanged += (_, e) =>
-        {
-            if (e.Value)
-            {
-                multiplayerOptions.IsVisible = true;
-            }
-        };
 
-        var submitButton = new Button
+        _submitButton = new Button
         {
             Text = "Start",
             FontFamily = "SourGummySemiBold",
@@ -225,53 +201,19 @@ public class ConfigPage : ContentPage
             VerticalOptions = LayoutOptions.Center
         };
 
-        submitButton.Clicked += async (_, _) =>
-        {
-            var selectedColorIndex = colorButtons.FindIndex(rb => rb.IsChecked);
-            if (selectedColorIndex >= 0)
-            {
-                Preferences.Default.Set("Color", selectedColorIndex);
-            }
 
-            var selectedPlayer2ColorIndex = player2ColorButtons.FindIndex(rb => rb.IsChecked);
-            if (selectedPlayer2ColorIndex >= 0 && !((selectedColorIndex == selectedPlayer2ColorIndex) && multiPlayerRadioButton.IsChecked))
-            {
-                Preferences.Default.Set("Color2", selectedPlayer2ColorIndex);
-            }
-            else
-            {
-                await DisplayAlertAsync("Whoops!", "Players cannot use the same color!", "OK");
-                return;
-            }
-
-
-
-            var selectedGameMode = singlePlayerRadioButton.IsChecked;
-            Preferences.Default.Set("GameMode", selectedGameMode);
-            Preferences.Default.Set("GameSize", gameSize);
-
-            try
-            {
-                await Shell.Current.GoToAsync(nameof(Views.GamePage));
-            }
-            catch (Exception ex)
-            {
-                await DisplayAlertAsync("Error", ex.Message, "OK");
-            }
-
-        };
 
         var verticalLayout = new VerticalStackLayout
         {
             Padding = 16,
             Spacing = 12,
-            Children = { titleLabel, gameModeSelect, gameSizeSelect, colorNameLabel, colorSelect, multiplayerOptions },
+            Children = { titleLabel, gameModeSelect, gameSizeSelect, colorNameLabel, colorSelect, _multiplayerOptions },
             VerticalOptions = LayoutOptions.Center
         };
 
         Grid.SetRow(nameGrid, 0);
         Grid.SetRow(verticalLayout, 1);
-        Grid.SetRow(submitButton, 2);
+        Grid.SetRow(_submitButton, 2);
 
         var gridLayout = new Grid
         {
@@ -285,7 +227,7 @@ public class ConfigPage : ContentPage
             {
                 nameGrid,
                 verticalLayout,
-                submitButton
+                _submitButton
             }
         };
 
@@ -410,4 +352,105 @@ public class ConfigPage : ContentPage
             }
         };
     }
+
+
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        _ = _configVM.LoadProfileImageAsync();
+
+        _singlePlayerRadioButton.CheckedChanged -= OnSinglePlayerCheckedChanged;
+        _singlePlayerRadioButton.CheckedChanged += OnSinglePlayerCheckedChanged;
+
+        _multiPlayerRadioButton.CheckedChanged -= OnMultiPlayerCheckedChanged;
+        _multiPlayerRadioButton.CheckedChanged += OnMultiPlayerCheckedChanged;
+
+        _lessButton.Clicked -= OnLessButtonClicked;
+        _lessButton.Clicked += OnLessButtonClicked;
+
+        _moreButton.Clicked -= OnMoreButtonClicked;
+        _moreButton.Clicked += OnMoreButtonClicked;
+
+        _submitButton.Clicked -= OnSubmitButtonClicked;
+        _submitButton.Clicked += OnSubmitButtonClicked;
+    }
+
+    protected override void OnDisappearing()
+    {
+        _singlePlayerRadioButton.CheckedChanged -= OnSinglePlayerCheckedChanged;
+        _multiPlayerRadioButton.CheckedChanged -= OnMultiPlayerCheckedChanged;
+        _lessButton.Clicked -= OnLessButtonClicked;
+        _moreButton.Clicked -= OnMoreButtonClicked;
+        _submitButton.Clicked -= OnSubmitButtonClicked;
+        base.OnDisappearing();
+    }
+
+    private void OnSinglePlayerCheckedChanged(object? sender, CheckedChangedEventArgs e)
+    {
+        if (e.Value)
+        {
+            _multiplayerOptions.IsVisible = false;
+        }
+    }
+
+    private void OnMultiPlayerCheckedChanged(object? sender, CheckedChangedEventArgs e)
+    {
+        if (e.Value)
+        {
+            _multiplayerOptions.IsVisible = true;
+        }
+    }
+
+    private void OnMoreButtonClicked(object? sender, EventArgs e)
+    {
+        if (_gameSize < 9)
+        {
+            _gameSize++;
+            _sizeLabel.Text = $"{_gameSize}x{_gameSize}";
+        }
+    }
+
+
+    private void OnLessButtonClicked(object? sender, EventArgs e)
+    {
+        if (_gameSize > 3)
+        {
+            _gameSize--;
+            _sizeLabel.Text = $"{_gameSize}x{_gameSize}";
+        }
+    }
+
+    private async void OnSubmitButtonClicked(object? sender, EventArgs e)
+    {
+        var selectedColorIndex = _colorButtons.FindIndex(rb => rb.IsChecked);
+
+        var selectedPlayer2ColorIndex = _player2ColorButtons.FindIndex(rb => rb.IsChecked);
+
+        if (selectedPlayer2ColorIndex < 0 || selectedColorIndex < 0)
+        {
+            await DisplayAlertAsync("Whoops!", "Please select a color for both players!", "OK");
+            return;
+        }
+
+        if (((selectedColorIndex == selectedPlayer2ColorIndex) && _multiPlayerRadioButton.IsChecked))
+        {
+            await DisplayAlertAsync("Whoops!", "Players cannot use the same color!", "OK");
+            return;
+        }
+
+        var selectedGameMode = _singlePlayerRadioButton.IsChecked;
+
+        _configVM.SavePreferences(selectedGameMode, _gameSize, selectedColorIndex, selectedPlayer2ColorIndex);
+
+        try
+        {
+            await Shell.Current.GoToAsync(nameof(Views.GamePage));
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlertAsync("Error", ex.Message, "OK");
+        }
+
+    }
+
 }
