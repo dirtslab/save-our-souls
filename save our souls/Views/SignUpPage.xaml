@@ -34,15 +34,18 @@
                 <StackLayout>
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <Button Text="Add profile photo"
+                        <Button x:Name="AddProfilePhotoButton"
+                                Text="Add profile photo"
                                 Grid.Column="0"
                                 Command="{Binding ShowPhotoOptionsCommand}" />
-                        <Image Source="{Binding ProfileImage}"
+                        <Image Source="{Binding Photo}"
                                Grid.Column="1"
-                               Aspect="AspectFill" />
+                               Aspect="AspectFill"
+                               MaximumHeightRequest="{Binding Source={x:Reference AddProfilePhotoButton}, Path=Height}"
+                               WidthRequest="{Binding Source={x:Reference AddProfilePhotoButton}, Path=Height}" />
                     </Grid>
                     
 

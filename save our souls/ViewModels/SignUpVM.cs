@@ -1,8 +1,9 @@
-﻿using System.Windows.Input;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System.Windows.Input;
 
 namespace save_our_souls.ViewModels
 {
-    public class SignUpVM
+    public class SignUpVM : ObservableObject
     {
         private readonly Services.UserAccountDatabase _userAccountDatabase;
 
@@ -53,6 +54,8 @@ namespace save_our_souls.ViewModels
                 await PickPhotoAsync();
             else if (selectedOption == "Take a photo")
                 await TakePhotoAsync();
+
+            OnPropertyChanged(nameof(Photo));
         }
 
         private async Task PickPhotoAsync()
