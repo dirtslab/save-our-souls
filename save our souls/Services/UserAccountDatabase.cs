@@ -25,8 +25,9 @@ namespace save_our_souls.Services
             {
                 if (db != null)
                     return;
-                db = new SQLiteAsyncConnection(Constants.DatabasePath, Constants.Flags);
-                await db.CreateTableAsync<Models.UserAccountModel>();
+                var connection = new SQLiteAsyncConnection(Constants.DatabasePath, Constants.Flags);
+                await connection.CreateTableAsync<Models.UserAccountModel>();
+                db = connection;
             }
             finally
             {
