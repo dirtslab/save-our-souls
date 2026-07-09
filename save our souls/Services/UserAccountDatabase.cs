@@ -13,13 +13,25 @@ namespace save_our_souls.Services
         private const int Iterations = 100_000;
 
         SQLiteAsyncConnection? db;
+        readonly SemaphoreSlim initLock = new SemaphoreSlim(1, 1);
 
         async Task Init()
         {
             if (db != null)
                 return;
-            db = new SQLiteAsyncConnection(Constants.DatabasePath, Constants.Flags);
-            var result = await db.CreateTableAsync<Models.UserAccountModel>();
+
+            await initLock.WaitAsync();
+            try
+            {
+                if (db != null)
+                    return;
+                db = new SQLiteAsyncConnection(Constants.DatabasePath, Constants.Flags);
+                await db.CreateTableAsync<Models.UserAccountModel>();
+            }
+            finally
+            {
+                initLock.Release();
+            }
         }
 
         public async Task AddUserAccountAsync(Models.UserAccountModel userAccount)
