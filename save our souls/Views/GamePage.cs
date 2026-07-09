@@ -1,6 +1,9 @@
-﻿using CommunityToolkit.Maui.Behaviors;
+﻿using CommunityToolkit.Maui;
+using CommunityToolkit.Maui.Behaviors;
+using CommunityToolkit.Maui.Extensions;
 using Microsoft.Maui.Controls.Shapes;
 using save_our_souls.ViewModels;
+using System.ComponentModel;
 
 namespace save_our_souls.Views;
 
@@ -157,6 +160,103 @@ public class GamePage : ContentPage
         };
 
         Content = layout;
+    }
+
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        _gameVM.PropertyChanged += OnGameVmPropertyChanged;
+    }
+
+    protected override void OnDisappearing()
+    {
+        _gameVM.PropertyChanged -= OnGameVmPropertyChanged;
+        base.OnDisappearing();
+    }
+
+    private async void OnGameVmPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName != nameof(GameVM.Winner) || _gameVM.Winner == -1)
+        {
+            return;
+        }
+
+        await OnWinDetected(_gameVM.Winner);
+    }
+
+    private async Task OnWinDetected(int winner)
+    {
+        string message = winner switch
+        {
+            1 => "Player 1 wins!",
+            2 => "Player 2 wins!",
+            0 => "It's a draw!",
+            _ => string.Empty
+        };
+
+        Color color = winner switch
+        {
+            1 => _gameVM.P1Color,
+            2 => _gameVM.P2Color,
+            0 => Colors.Gray,
+            _ => Colors.Black
+        };
+
+        if (string.IsNullOrEmpty(message))
+        {
+            return;
+        }
+
+        var winnerText = new Label
+        {
+            Text = message,
+            FontFamily = "SourGummySemiBold",
+            FontSize = 24,
+            TextColor = color,
+            HorizontalOptions = LayoutOptions.Center,
+            VerticalOptions = LayoutOptions.Center
+        };
+
+        var exitButton = new Button
+        {
+            Text = "OK",
+            FontFamily = "SourGummySemiBold",
+            FontSize = 18,
+            TextColor = Colors.White,
+            BackgroundColor = color,
+            HorizontalOptions = LayoutOptions.Center,
+            VerticalOptions = LayoutOptions.End,
+            Command = new Command(async () =>
+            {
+                await this.ClosePopupAsync();
+                await Navigation.PopAsync();
+            })
+        };
+
+        Grid.SetRow(winnerText, 0);
+        Grid.SetRow(exitButton, 1);
+
+        await this.ShowPopupAsync(new Grid
+        {
+            RowDefinitions =
+            {
+                new RowDefinition(GridLength.Star),
+                new RowDefinition(GridLength.Star)
+            },
+            Children =
+            {
+                winnerText, exitButton
+            }
+        }, new PopupOptions
+        {
+            CanBeDismissedByTappingOutsideOfPopup = false,
+            Shape = new RoundRectangle
+            {
+                CornerRadius = new CornerRadius(20, 20, 20, 20),
+                StrokeThickness = 2,
+                Stroke = Colors.LightGray
+            }
+        });
     }
 
     protected override void OnSizeAllocated(double width, double height)
