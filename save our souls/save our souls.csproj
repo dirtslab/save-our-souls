@@ -67,7 +67,9 @@
 
 	<ItemGroup>
 	  <AndroidResource Include="Platforms\Android\Resources\layout\app_widget.xml" />
+	  <AndroidResource Include="Platforms\Android\Resources\layout\game_config_widget.xml" />
 	  <AndroidResource Include="Platforms\Android\Resources\xml\app_widget_info.xml" />
+	  <AndroidResource Include="Platforms\Android\Resources\xml\game_config_widget_info.xml" />
 	</ItemGroup>
 
 	<ItemGroup>

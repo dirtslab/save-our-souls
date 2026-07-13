@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/config_widget_root"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="#512BD4"
+	android:orientation="vertical"
+	android:padding="10dp"
+	android:gravity="center">
+
+	<!-- Title -->
+	<TextView
+		android:id="@+id/config_widget_title"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="SOS Game"
+		android:textColor="#FFFFFF"
+		android:textSize="14sp"
+		android:textStyle="bold"
+		android:gravity="center"
+		android:layout_marginBottom="6dp" />
+
+	<!-- Game Mode toggle -->
+	<Button
+		android:id="@+id/config_widget_mode_btn"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="Mode: Singleplayer"
+		android:textColor="#FFFFFF"
+		android:textSize="11sp"
+		android:background="#7B52E0"
+		android:layout_marginBottom="4dp"
+		android:paddingTop="4dp"
+		android:paddingBottom="4dp" />
+
+	<!-- Board size row -->
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:gravity="center"
+		android:layout_marginBottom="6dp">
+
+		<Button
+			android:id="@+id/config_widget_size_dec"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="-"
+			android:textColor="#FFFFFF"
+			android:textSize="14sp"
+			android:background="#7B52E0"
+			android:paddingTop="4dp"
+			android:paddingBottom="4dp" />
+
+		<TextView
+			android:id="@+id/config_widget_size_label"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="2"
+			android:text="5x5"
+			android:textColor="#FFFFFF"
+			android:textSize="13sp"
+			android:textStyle="bold"
+			android:gravity="center" />
+
+		<Button
+			android:id="@+id/config_widget_size_inc"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="+"
+			android:textColor="#FFFFFF"
+			android:textSize="14sp"
+			android:background="#7B52E0"
+			android:paddingTop="4dp"
+			android:paddingBottom="4dp" />
+
+	</LinearLayout>
+
+	<!-- Start Game button -->
+	<Button
+		android:id="@+id/config_widget_start_btn"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="Start Game"
+		android:textColor="#FFFFFF"
+		android:textSize="12sp"
+		android:textStyle="bold"
+		android:background="#009688"
+		android:paddingTop="4dp"
+		android:paddingBottom="4dp" />
+
+</LinearLayout>

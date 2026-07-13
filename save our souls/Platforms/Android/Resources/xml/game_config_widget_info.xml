@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+	android:initialLayout="@layout/game_config_widget"
+	android:minHeight="180dp"
+	android:minWidth="250dp"
+	android:minResizeHeight="140dp"
+	android:minResizeWidth="180dp"
+	android:previewImage="@mipmap/sos_app_logo"
+	android:resizeMode="horizontal|vertical"
+	android:targetCellHeight="3"
+	android:targetCellWidth="4"
+	android:updatePeriodMillis="0"
+	android:widgetCategory="home_screen" />

@@ -13,6 +13,17 @@ public partial class LoginPage : ContentPage
         BindingContext = loginVM;
     }
 
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+
+        if (WidgetLaunchState.PendingLaunch)
+        {
+            WidgetLaunchState.PendingLaunch = false;
+            await Shell.Current.GoToAsync(nameof(Views.GamePage));
+        }
+    }
+
     private async void OnLoginClicked(object sender, EventArgs e)
     {
         if (loginVM != null)

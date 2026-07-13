@@ -13,6 +13,15 @@
 			</intent-filter>
 			<meta-data android:name="android.appwidget.provider" android:resource="@xml/app_widget_info" />
 		</receiver>
+		<receiver android:enabled="true" android:exported="true" android:name="save_our_souls.GameConfigWidgetProvider">
+			<intent-filter>
+				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+				<action android:name="save_our_souls.ACTION_CONFIG_MODE_TOGGLE" />
+				<action android:name="save_our_souls.ACTION_CONFIG_SIZE_DEC" />
+				<action android:name="save_our_souls.ACTION_CONFIG_SIZE_INC" />
+			</intent-filter>
+			<meta-data android:name="android.appwidget.provider" android:resource="@xml/game_config_widget_info" />
+		</receiver>
 	</application>
 	<queries>
 		<intent>
