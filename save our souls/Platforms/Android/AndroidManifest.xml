@@ -1,12 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-	<application android:allowBackup="true" android:icon="@mipmap/sos_app_logo" android:supportsRtl="true" android:label="SOS Game"></application>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.CAMERA" />
 	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+	<application android:allowBackup="true" android:icon="@mipmap/sos_app_logo" android:label="SOS Game" android:supportsRtl="true">
+		<receiver android:enabled="true" android:exported="true" android:name="save_our_souls.LauncherWidgetProvider">
+			<intent-filter>
+				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+			</intent-filter>
+			<meta-data android:name="android.appwidget.provider" android:resource="@xml/app_widget_info" />
+		</receiver>
+	</application>
 	<queries>
 		<intent>
 			<action android:name="android.media.action.IMAGE_CAPTURE" />
